@@ -8,7 +8,7 @@ sendmail.
 
 Currently this gem is in alpha quality, things we are still working:
 
-- [ ] Implement Railtie which automatically hooks delivery method into AM
+- [x] Implement Railtie which automatically hooks delivery method into AM
 - [ ] Attachment support for image/* and application/pdf (Mandrill API restriction)
 - [ ] Support for custom `X-` headers
 - [ ] Ability to override Mandrill settings, e.g. click tracking, per mail
