@@ -17,6 +17,9 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
+  gem.signing_key   = "~/.ssh/gem-at-point.key"
+  gem.cert_chain    = ["gem-at-point.pub"]
+
   gem.required_ruby_version = '>= 1.9'
 
   gem.add_dependency 'mail', '>= 2.0'
