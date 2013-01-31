@@ -6,9 +6,12 @@ describe Mandrails::Delivery::Mandrill do
   subject { described_class.new(key: "12345") }
 
   class SimpleMailer < ::ActionMailer::Base
-    default from: "frank@at-point.ch"
+    default from: "frank@at-point.ch", from_name: "Frank S."
     def sample_email
-      mail(to: "megan@at-point.ch", subject: "Hell Yeah", body: "Yo bro!")
+      mail(to: "megan@at-point.ch", subject: "Hell Yeah") do |fmt|
+        fmt.html { render text: "<b>Yo bro!</b>" }
+        fmt.text { render text: "Yo bro!" }
+      end
     end
   end
 
@@ -29,9 +32,25 @@ describe Mandrails::Delivery::Mandrill do
   end
 
   context "#deliver!" do
-    it "uses mandrill API" do
-      messages.should_receive(:send) { [{"email" => "megan@at-point.ch", "status" => "sent"}] }
-      subject.deliver!(sample_email).should == subject
+    it "is able to handle :from_name" do
+      messages.should_receive(:send) do |msg, async|
+        msg[:from_name].should == "Frank S."
+      end
+      subject.deliver!(sample_email)
+    end
+
+    it "sets :html" do
+      messages.should_receive(:send) do |msg, async|
+        msg[:html].should eql "<b>Yo bro!</b>"
+      end
+      subject.deliver!(sample_email)
+    end
+
+    it "sets :text" do
+      messages.should_receive(:send) do |msg, async|
+        msg[:text].should eql "Yo bro!"
+      end
+      subject.deliver!(sample_email)
     end
   end
 end

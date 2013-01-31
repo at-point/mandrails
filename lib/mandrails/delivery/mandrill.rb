@@ -51,17 +51,16 @@ module Mandrails
         end
 
         message[:subject] = mail.subject
-        message[:from_name] = mail.header['from-name'].presence || settings[:from_name]
+        message[:from_name] = mail.header['from-name'].to_s.presence || settings[:from_name]
         message[:from_email] = mail.from && mail.from.first.presence || settings[:from_email]
         message[:to] = mail.to.map { |email| { email: email, name: email } }
         message[:headers] = { 'Reply-To' => mail.reply_to.presence }
 
-        message[:tags] = Array.wrap(settings[:tags].presence)
+        message[:tags] = Array.wrap(settings[:tags]) if settings[:tags].present?
 
         [:html, :text].each do |format|
-          content = mail.send(:"#{format.to_s}_part")
-          content ||= mail.body if mail.mime_type == (format == :html ? "text/html" : "text/plain")
-          message[format] = content if content
+          content = mail.send("#{format}_part")
+          message[format] = content.body.raw_source if content.present?
         end
 
         message

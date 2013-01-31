@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 1.9'
 
   gem.add_dependency 'mail', '>= 2.0'
+  gem.add_dependency 'activesupport', '>= 3.0'
   gem.add_dependency 'mandrill-api', '~> 1.0'
 
   gem.add_development_dependency 'rake'
