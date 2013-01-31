@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Mandrails::VERSION
   gem.authors       = ["Lukas Westermann", "Philip Lehmann"]
   gem.email         = ["lukas@at-point.ch", "philip@at-point.ch"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.summary       = %q{An e-mail delivery method implementation which uses the Mandrill REST API.}
+  gem.description   = %q{Provides a delivery method implementation for ActionMailer and mail which uses the Mandrill REST API.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
