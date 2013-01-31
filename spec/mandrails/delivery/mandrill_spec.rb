@@ -1,74 +1,61 @@
 require 'spec_helper'
-require 'action_mailer'
 require 'mandrails/delivery/mandrill'
 
 describe Mandrails::Delivery::Mandrill do
+  include MailsSupport
+
   subject { described_class.new(key: "12345") }
-
-  class SimpleMailer < ::ActionMailer::Base
-    default from: "frank@at-point.ch", from_name: "Frank S."
-    def sample_email
-      mail(to: "megan@at-point.ch", subject: "Hell Yeah") do |fmt|
-        fmt.html { render text: "<b>Yo bro!</b>" }
-        fmt.text { render text: "Yo bro!" }
-      end
-    end
-
-    def htmlonly_email
-      mail(to: "megan@at-point.ch", subject: "HTML") do |fmt|
-        fmt.html { render text: "<b>Yo bro!</b>" }
-      end
-    end
-  end
 
   let(:messages) {
     double("messages").tap { |msg| subject.mandrill_api.stub(:messages) { msg } }
   }
-  let(:sample_email) { SimpleMailer.sample_email }
-  let(:htmlonly_email) { SimpleMailer.htmlonly_email }
 
   context ':key' do
     it 'raises an exception if missing' do
       handler = described_class.new(key: nil)
-      expect { handler.deliver!(sample_email) }.to raise_error ::Mandrill::Error, /Mandrill API key/
+      expect { handler.deliver!(text_mail) }.to raise_error ::Mandrill::Error, /Mandrill API key/
     end
 
-    it "is forwarded to mandrill gem as key when creating API instance" do
+    it 'is forwarded to mandrill gem as key when creating API instance' do
       subject.mandrill_api.apikey.should == "12345"
     end
   end
 
-  context "#deliver!" do
-    it "is able to handle :from_name" do
-      messages.should_receive(:send) do |msg, async|
-        msg[:from_name].should == "Frank S."
-      end
-      subject.deliver!(sample_email)
+  context '#deliver!' do
+    it 'delegates message to mandrill gem' do
+      messages.should_receive(:send).with(kind_of(Hash), false) { "OK" }
+      subject.deliver! text_mail
     end
 
-    context "text & html e-mail" do
-      it "sets :html" do
-        messages.should_receive(:send) do |msg, async|
-          msg[:html].should eql "<b>Yo bro!</b>"
-        end
-        subject.deliver!(sample_email)
+    context 'async' do
+      it 'normally does not send async' do
+        messages.should_receive(:send).with(kind_of(Hash), false) { "OK" }
+        subject.deliver! text_mail
       end
 
-      it "sets :text" do
-        messages.should_receive(:send) do |msg, async|
-          msg[:text].should eql "Yo bro!"
+      context 'when :async is true' do
+        subject { described_class.new(key: '12345', async: true) }
+
+        it 'defaults to sending async' do
+        messages.should_receive(:send).with(kind_of(Hash), true) { "OK" }
+        subject.deliver! text_mail
         end
-        subject.deliver!(sample_email)
       end
     end
 
-    context "html only e-mail" do
-      it "sets :html" do
-        messages.should_receive(:send) do |msg, async|
-          msg[:text].should be_nil
-          msg[:html].should == "<b>Yo bro!</b>"
+    context 'return value' do
+      it 'normally returns self' do
+        messages.should_receive(:send) { "OK" }
+        subject.deliver!(text_mail).should eql subject
+      end
+
+      context 'when :return_response is true' do
+        subject { described_class.new(key: '12345', return_response: true) }
+
+        it 'returns the response 1:1 as returned by the mandrill gem' do
+          messages.should_receive(:send) { "TEH result" }
+          subject.deliver!(text_mail).should == "TEH result"
         end
-        subject.deliver!(htmlonly_email)
       end
     end
   end
