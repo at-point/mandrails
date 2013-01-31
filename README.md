@@ -24,7 +24,20 @@ Add mandrails to your Gemfile and run `bundle` afterwards:
 
 ## Usage
 
-TODO: Write usage instructions here
+When using with Rails it's basically all setup to use the `:mandrill` delivery
+handler in config/environemnts/*.rb:
+
+```ruby
+  config.action_mailer.delivery_method = :mandrill
+  config.action_mailer.mandrails_settings = {
+    key: "123...-abcde", # or set the MANDRILL_APIKEY environment variable
+    from_name: "My Application",
+    from_email: "saas@example.com"
+  }
+```
+
+Basically the `:key` and `:from_email` are required attributes, the `:key` can
+be omitted if the `MANDRILL_APIKEY` environment variable is set.
 
 ## Additional information
 
