@@ -4,8 +4,35 @@ require "mandrill"
 module Mandrails
   module Delivery
 
-    # A delivery method implementation which uses the Mandrill REST API.
+    # == Sending e-mail with Mandrill API
     #
+    # A delivery method implementation which uses the Mandrill REST API.
+    # This is done by providing a mailer on top of mandrill-api gem.
+    #
+    # === Using it with mail gem
+    #
+    # Requires the <code>:key</code> option, or set the environment
+    # variable <code>MANDRILL_APIKEY</code> to a your Mandrill API key.
+    #
+    #   Mail.defaults do
+    #     delivery_method Mandrails::Delivery::Mandrill, {
+    #                              :key        => "123...-abcde", # or set the MANDRILL_APIKEY environment variable
+    #                              :from_name  => "Your Name",
+    #                              :from_email => "your@mail.com" }
+    #   end
+    #
+    # === Using it with Rails & ActionMailer
+    #
+    # Using the railtie the <code>:mandrill</code> delivery method is
+    # automatically available, also ensure to set the API key using
+    # either <code>:key</code> setting or <code>MANDRILL_APIKEY</code>
+    # environment variable. Add something like to the <code>config/environments/*</code>:
+    #
+    #    config.action_mailer.delivery_method = :mandrill
+    #    config.action_mailer.mandrails_settings = {
+    #      key: "123...-abcde", # or set the MANDRILL_APIKEY environment variable
+    #      from_name: "Your Name",
+    #      from_email: "your@mail.com" }
     #
     class Mandrill
 
@@ -13,7 +40,7 @@ module Mandrails
       # but seems to be in all deliver_methods from mikel/mail as well
       attr_accessor :settings
 
-      def initialize(values = nil)
+      def initialize(values = nil) #:nodoc:
         @settings = {
                       track_opens: true,
                       track_clicks: false,
