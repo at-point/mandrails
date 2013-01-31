@@ -13,12 +13,19 @@ describe Mandrails::Delivery::Mandrill do
         fmt.text { render text: "Yo bro!" }
       end
     end
+
+    def htmlonly_email
+      mail(to: "megan@at-point.ch", subject: "HTML") do |fmt|
+        fmt.html { render text: "<b>Yo bro!</b>" }
+      end
+    end
   end
 
   let(:messages) {
     double("messages").tap { |msg| subject.mandrill_api.stub(:messages) { msg } }
   }
   let(:sample_email) { SimpleMailer.sample_email }
+  let(:htmlonly_email) { SimpleMailer.htmlonly_email }
 
   context ':key' do
     it 'raises an exception if missing' do
@@ -39,18 +46,30 @@ describe Mandrails::Delivery::Mandrill do
       subject.deliver!(sample_email)
     end
 
-    it "sets :html" do
-      messages.should_receive(:send) do |msg, async|
-        msg[:html].should eql "<b>Yo bro!</b>"
+    context "text & html e-mail" do
+      it "sets :html" do
+        messages.should_receive(:send) do |msg, async|
+          msg[:html].should eql "<b>Yo bro!</b>"
+        end
+        subject.deliver!(sample_email)
       end
-      subject.deliver!(sample_email)
+
+      it "sets :text" do
+        messages.should_receive(:send) do |msg, async|
+          msg[:text].should eql "Yo bro!"
+        end
+        subject.deliver!(sample_email)
+      end
     end
 
-    it "sets :text" do
-      messages.should_receive(:send) do |msg, async|
-        msg[:text].should eql "Yo bro!"
+    context "html only e-mail" do
+      it "sets :html" do
+        messages.should_receive(:send) do |msg, async|
+          msg[:text].should be_nil
+          msg[:html].should == "<b>Yo bro!</b>"
+        end
+        subject.deliver!(htmlonly_email)
       end
-      subject.deliver!(sample_email)
     end
   end
 end

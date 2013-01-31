@@ -58,12 +58,16 @@ module Mandrails
 
         message[:tags] = Array.wrap(settings[:tags]) if settings[:tags].present?
 
-        [:html, :text].each do |format|
-          content = mail.send("#{format}_part")
-          message[format] = content.body.raw_source if content.present?
-        end
+        extract_body(message, mail, :text)
+        extract_body(message, mail, :html)
 
         message
+      end
+
+      def extract_body(message, mail, format)
+        content = mail.send("#{format}_part").presence
+        content ||= mail if mail.mime_type =~ (format == :text ? %r{\Atext/plain} : %r{\Atext/#{format}})
+        message[format] = content.body.raw_source if content.present?
       end
     end
   end
