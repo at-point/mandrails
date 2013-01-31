@@ -1,5 +1,4 @@
 require "mandrails/version"
+require "mandrails/delivery/mandrill"
 
-module Mandrails
-  # Your code goes here...
-end
+require "mandrails/railtie" if defined?(::Rails)

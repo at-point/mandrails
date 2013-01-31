@@ -1,4 +1,5 @@
-require 'mandrill'
+require "mail"
+require "mandrill"
 
 module Mandrails
   module Delivery
@@ -12,7 +13,7 @@ module Mandrails
       # but seems to be in all deliver_methods from mikel/mail as well
       attr_accessor :settings
 
-      def initialize(values)
+      def initialize(values = nil)
         @settings = {
                       track_opens: true,
                       track_clicks: false,
@@ -20,7 +21,7 @@ module Mandrails
                       merge: false,
                       async: false,
                       key: ::ENV['MANDRILL_APIKEY'].presence
-                    }.merge(values)
+                    }.merge(values || {})
       end
 
       # Public: Access to the Mandrill::API instance used to send messages. It raises an
@@ -34,7 +35,11 @@ module Mandrails
       def deliver!(mail)
         # TODO: verify incoming `mail` argument, see https://github.com/mikel/mail/blob/master/lib/mail/check_delivery_params.rb
         message = build_message(mail)
-        mandrill_api.messages.send(message, settings[:async])
+        response = mandrill_api.messages.send(message, settings[:async])
+
+        # Either return response or instance
+        return response if settings[:return_response]
+        self
       end
 
       private
