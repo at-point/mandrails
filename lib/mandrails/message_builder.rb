@@ -34,24 +34,7 @@ module Mandrails
         to: recipients,
 
         # Additional headers
-        headers: headers,
-
-        # Tags
-        tags: tags
-      ).tap { |msg| MANDRILL_SETTINGS.each { |key| msg[key] = setting(key) } }
-    end
-
-    def setting(key)
-      mail_defaults[key] || defaults[key]
-    end
-
-    def mail_defaults
-      @mail_defaults ||= mail.header['mandrill'] && mail.header['mandrill'].value || {}
-    end
-
-    def tags
-      tags = Array.wrap(setting(:tags)) + Array.wrap(defaults[:tags])
-      tags.map(&:to_s).compact.uniq
+        headers: headers)
     end
 
     # Internal: Extract from name from either the header or defaults.
