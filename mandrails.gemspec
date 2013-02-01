@@ -17,8 +17,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.signing_key   = "#{ENV['HOME']}/.ssh/gem-at-point.key"
-  gem.cert_chain    = ["gem-at-point.pub"]
+  #gem.signing_key   = "#{ENV['HOME']}/.ssh/gem-at-point.key"
+  #gem.cert_chain    = ["gem-at-point.pub"]
 
   gem.required_ruby_version = '>= 1.9'
 
