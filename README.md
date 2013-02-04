@@ -29,7 +29,7 @@ handler in config/environemnts/*.rb:
 
 ```ruby
   config.action_mailer.delivery_method = :mandrill
-  config.action_mailer.mandrails_settings = {
+  config.action_mailer.mandrill_settings = {
     key: "123...-abcde", # or set the MANDRILL_APIKEY environment variable
     from_name: "My Application",
     from_email: "saas@example.com"
