@@ -3,7 +3,7 @@ require 'mail'
 require 'mandrails/message_builder'
 
 describe Mandrails::MessageBuilder do
-  include MailsSupport
+  include Factories::Emails
 
   subject { described_class.new(text_mail).as_json }
 
@@ -81,6 +81,34 @@ describe Mandrails::MessageBuilder do
 
       it 'sets :text' do
         subject[:text].should == 'Yoo buddy'
+      end
+    end
+  end
+
+  context 'attachments' do
+    subject { described_class.new(attachment_mail).as_json }
+
+    it 'sets :text' do
+      subject[:text].should == 'Yooo with attachment'
+    end
+
+    it 'has two attachments' do
+      subject[:attachments].length.should == 2
+    end
+
+    context 'first attachment (pdf)' do
+      subject { described_class.new(attachment_mail).as_json[:attachments].first }
+
+      it 'has :type as application/pdf' do
+        subject[:type].should == 'application/pdf'
+      end
+
+      it 'has :name' do
+        subject[:name].should == 'file.pdf'
+      end
+
+      it 'has Base64 encoded :content' do
+        subject[:content].should == 'UERGIEZJTEUgQlJPIQ=='
       end
     end
   end

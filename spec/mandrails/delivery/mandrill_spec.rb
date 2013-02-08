@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'mandrails/delivery/mandrill'
 
 describe Mandrails::Delivery::Mandrill do
-  include MailsSupport
+  include Factories::Emails
 
   subject { described_class.new(key: "12345") }
 

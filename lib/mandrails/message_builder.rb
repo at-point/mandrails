@@ -1,4 +1,5 @@
 require 'active_support/core_ext/object'
+require 'base64'
 
 module Mandrails
 
@@ -34,6 +35,7 @@ module Mandrails
         to: recipients,
 
         # Additional headers
+        attachments: attachments,
         headers: headers)
     end
 
@@ -69,6 +71,16 @@ module Mandrails
     # Returns Array of Hash with `:name`, `:email`.
     def recipients
       [mail.to, mail.cc].compact.flatten.map { |email| { email: email, name: email } }
+    end
+
+    # Internal: Extract attachments.
+    #
+    # Returns Array of Hash.
+    def attachments
+      return unless mail.attachments.length > 0
+      mail.attachments.map do |part|
+        { type: part.mime_type, name: part.filename, content: Base64.encode64(part.body.raw_source).strip }
+      end
     end
 
     # Internal: Extract Reply-To header field.
