@@ -84,12 +84,12 @@ module Mandrails
     end
 
     # Internal: Extract Reply-To header field.
-    # TODO: extract all X-* headers as well!
+    # FIXME: extract all X-* headers as well!
     #
     # Returns Hash.
     def headers
       headers = {}
-      headers['Reply-To'] = mail.reply_to.to_s if mail.reply_to.present?
+      headers['Reply-To'] = mail.reply_to.first.to_s if mail.reply_to.present?
       headers
     end
 
