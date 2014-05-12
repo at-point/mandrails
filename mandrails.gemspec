@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["lukas@at-point.ch", "philip@at-point.ch"]
   gem.summary       = %q{An e-mail delivery method implementation which uses the Mandrill REST API.}
   gem.description   = %q{Provides a delivery method implementation for ActionMailer and mail which uses the Mandrill REST API.}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/at-point/mandrails"
 
   gem.files         = %w{.gitignore Gemfile Rakefile README.md LICENSE.txt mandrails.gemspec} + Dir['{lib,spec}/**/*.rb']
   gem.test_files    = Dir['spec/**/*.rb']
