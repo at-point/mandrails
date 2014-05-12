@@ -1,0 +1,15 @@
+language: ruby
+script: "bundle exec rspec spec/"
+rvm:
+  - 1.9.3
+  - 2.0.0
+  - 2.1.1
+  - jruby-19mode
+
+#gemfile:
+#  - Gemfile
+#  - gemfiles/4.0.gemfile
+
+#matrix:
+#  allow_failures:
+#    - rvm: jruby-19mode

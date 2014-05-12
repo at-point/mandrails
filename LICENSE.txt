@@ -1,4 +1,4 @@
-Copyright (c) 2013 at-point ag. http://at-point.ch
+Copyright (c) 2013,2014 at-point ag. http://at-point.ch
 
 MIT License
 
